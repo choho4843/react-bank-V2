@@ -40,8 +40,8 @@ class MakeAccount extends Component {
     }
     submit = (e)=> {
         console.log(JSON.stringify(this.state.acc));
-        axios.post('http://localhost:8080/makeaccount',
-         {acc:JSON.stringify(this.state.acc)}
+        axios.post('http://localhost:8080/makeaccount',null,
+         {params:this.state.acc}
          ).then((response)=>{this.setState({msg_header:"계좌개설", msg_body:'계좌가 개설되었습니다.'});
          this.toggle();
         }
@@ -83,6 +83,7 @@ class MakeAccount extends Component {
                             <Col sm={8}>
                                 <Input type='select' name="grade" id='grade'
                                     style={{ color: "gray" }} disabled={!this.state.special} onChange={this.change}>
+                                    <opiton>---</opiton>
                                     <option>VIP</option>
                                     <option>Gold</option>
                                     <option>Silver</option>

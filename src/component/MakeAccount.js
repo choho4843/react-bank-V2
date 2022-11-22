@@ -24,29 +24,46 @@ class MakeAccount extends Component {
         }
 
     }
-    change =(e) => {
+    change = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        this.setState({acc:{...this.state.acc,[name]:value}})
+        this.setState({ acc: { ...this.state.acc, [name]: value } })
     }
     changeSpecial = (e) => {
         this.setState({ special: e.target.checked });
-        if(!e.target.checked){
-            this.setState({acc:{...this.acc, grade:''}});
+        if (!e.target.checked) {
+            this.setState({ acc: { ...this.acc, grade: '' } });
         }
     }
     toggle = (e) => {
         this.setState({ modal: !this.state.modal });
     }
-    submit = (e)=> {
+    checkid = (e) => {
+        axios.post('http://localhost:8080/doubleid', null,
+            { params: { id: this.state.acc.id} }
+        ).then((response) => {
+            let msg = '';
+            if (response.data === true)
+                msg = "사용중인 계좌번호입니다.";
+            else
+                msg = "사용가능한 계좌번호입니다.";
+            this.setState({ msg_header: "계좌중복확인", msg_body: msg });
+            this.toggle();
+        }).catch((error) => {
+            this.setState({ msg_header: '오류', msg_body: '계좌 개설에 실패했습니다.' })
+            this.toggle();
+        })
+    }
+    submit = (e) => {
         console.log(JSON.stringify(this.state.acc));
-        axios.post('http://localhost:8080/makeaccount',null,
-         {params:this.state.acc}
-         ).then((response)=>{this.setState({msg_header:"계좌개설", msg_body:'계좌가 개설되었습니다.'});
-         this.toggle();
+        axios.post('http://localhost:8080/makeaccount', null,
+            { params: this.state.acc }
+        ).then((response) => {
+            this.setState({ msg_header: "계좌개설", msg_body: '계좌가 개설되었습니다.' });
+            this.toggle();
         }
-        ).catch((error)=> {
-            this.setState({msg_header:'오류', msg_body:'계좌개설에 실패했습니다.'})
+        ).catch((error) => {
+            this.setState({ msg_header: '오류', msg_body: '계좌개설에 실패했습니다.' })
             this.toggle();
         })
     }
@@ -61,7 +78,7 @@ class MakeAccount extends Component {
                                 <Input type="text" name="id" id='id' value={this.state.acc.id} onChange={this.change} />
                             </Col>
                             <Col>
-                                <Button sm={2} color='primary' style={{ width: '100%' }}>중복</Button>
+                                <Button sm={2} color='primary' style={{ width: '100%' }} onClick={this.checkid}>중복</Button>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
@@ -95,7 +112,7 @@ class MakeAccount extends Component {
                         <FormGroup>
                             <Col sm={12} >
                                 <Button style={{ width: '100%' }} color='primary'
-                                onClick={this.submit}>계좌개설</Button>
+                                    onClick={this.submit}>계좌개설</Button>
                             </Col>
                         </FormGroup>
                     </Form>

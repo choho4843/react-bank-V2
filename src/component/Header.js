@@ -24,6 +24,9 @@ class Header extends Component {
                     <li className="nav-item">
                         <Link to={'/accountinfo'}>계좌조회</Link>
                     </li>
+                    <li className="nav-item">
+                        <Link to={'/list'}>계좌리스트</Link>
+                    </li>
                 </ul>
             </div>    
         )
